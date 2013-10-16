@@ -1,4 +1,4 @@
-function lsr_plot(f_list, dt_list, t_step)
+function varargout = lsr_plot(f_list, dt_list, t_step)
 %LSR_PLOT Linear Speed Ramp PLOT
 %
 % varargin:
@@ -7,9 +7,10 @@ function lsr_plot(f_list, dt_list, t_step)
 %   t_step   --  time step
 %
 % varargout:
-%   t_seq   --  timeline sequences
-%   f_seq   --  sequence of frequencies
-%   s_seq   --  sequence of accumulative stepper numbers
+%   p_a   --   polynomial curve fitting outputs for acceleration ramp
+%   S_a   --   ditto
+%   p_d   --   for deceleration ramp
+%   S_d   --   ditto
 %
 % copyright (c) wulx, <gurdy.woo@mail.ustc.edu.cn>
 % last modified by wulx, 2013/10/16
@@ -46,8 +47,16 @@ f_dec = f_list((ind+1):end);
 
 plot(acc_pts, f_acc, dec_pts, f_dec, 'k-')
 
-p_a = polyfit(acc_pts, f_acc, 1); % Polynomial curve fitting for acceleration ramp
-p_d = polyfit(dec_pts, f_dec, 1); % for deceleration ramp
+[p_a, S_a] = polyfit(acc_pts, f_acc, 1); % Polynomial curve fitting for acceleration ramp
+[p_d, S_d] = polyfit(dec_pts, f_dec, 1); % for deceleration ramp
 
 title(['Acceleration: ' num2str(p_a(1)) ' ; deceleration: ' num2str(p_d(1))]);
 
+switch nargout
+    case 2
+        varargout = {p_a, p_d};
+    case 4
+        varargout = {p_a, S_a, p_d, S_d};
+    otherwise
+        disp('well done:)');
+end
