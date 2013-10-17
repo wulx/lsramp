@@ -25,7 +25,7 @@ for i = 1:num
     sn_a = sum( sn_list(1:i-1) );
     t_seq(sn_a + (1:sn_i)) = t_list(i) + (0:sn_i-1) / f_list(i);
 end
-t_seq(end) = t_seq(end-1); % only sn_tot pulses
+t_seq(end) = t_seq(end-1) + 1/f_list(end); % no pulse
 
 s_seq = [1:sn_tot sn_tot];
 
