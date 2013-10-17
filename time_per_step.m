@@ -21,6 +21,48 @@ function [f_list, dt_list] = time_per_step(sn_a, sn_c, sn_d, pf_i, pf_m, s_u, me
 if nargin < 7, method = 'ideal'; end
 if nargin < 6, s_u = 1; end
 
+sn = sn_a + sn_d - 1;
+f_list = zeros(1, sn); % pre-allocation for better performance
+dt_list = zeros(1, sn); % ditto
+
+switch method
+    case 'ideal'
+        % speed up -------------------------------------------------------%
+        % a_f -- frequency acceleration
+        [a_f, v_0, v_m] = ramp_eq(pf_i, pf_m, sn_a, s_u);
+        
+        % motion formula:
+        %   v1^2 - v0^2 = 2*a*S
+        % rising edges
+        v_a = [v_0 arrayfun(@(n) sqrt(v_0^2 + 2*a_f*n*s_u), 1:sn_a)];
+        
+        % reference line
+        %dt_a = (v_a(2:end) - v_a(1:end-1)) / a_f;
+        %t_list = arrayfun(@(n) sum( dt_a(1:n) ), 0:n_a);
+        %plot(t_list, v_list, 'k-')
+        
+        f_list(1:sn_a) = (v_a(1:end-1) + v_a(2:end)) / 2;
+        dt_list(1:sn_a-1) = s_u ./ f_list(1:sn_a-1);
+        
+        % at max speed ---------------------------------------------------%
+        %f_list(sn_a) = pf_m;
+        dt_list(sn_a) = (sn_c + 2) / pf_m;
+        
+        % speed down -----------------------------------------------------%
+        [d_f, u_0, u_m] = ramp_eq(pf_i, pf_m, sn_d, s_u);
+        
+        % similar to v_a, falling edges
+        u_d = [arrayfun(@(i) sqrt(u_m^2 - 2*d_f*(i-1)*s_u), 1:sn_d) u_0];
+        
+        f_list(sn_a+1:end) = (u_d(2:end-1) + u_d(3:end)) / 2;
+        dt_list(sn_a+1:end) = s_u ./ f_list(sn_a+1:end);
+        
+    case {'round', 'fix'}
+        %
+    otherwise
+        disp(['unknown approximation method: ' method])
+        disp('supported methods: ideal(default), round and fix')
+end
 
 end
 
