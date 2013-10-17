@@ -43,9 +43,9 @@ switch method
         f_list(sn_a - 1 + (1:sn_d)) = linspace(pf_m, pf_i, sn_d); 
     case {'round', 'fix'}
         % select round method
-        round_to = @(x) round(x);
+        round_to = @round; % function handle
         if strcmp(method, 'fix')
-            round_to = @(x) fix(x);
+            round_to = @fix;
         end
         % #1 acceleration
         % divide frequencies uniformly and round them to nearest integer
