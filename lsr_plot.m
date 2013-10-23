@@ -11,7 +11,7 @@ function varargout = lsr_plot(f_list, dt_list, t_step)
 %   S_a   --   ditto
 %   p_d   --   for deceleration ramp
 %   S_d   --   ditto
-%
+
 % copyright (c) wulx, <gurdy.woo@mail.ustc.edu.cn>
 % last modified by wulx, 2013/10/16
 

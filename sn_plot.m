@@ -8,7 +8,7 @@ function [s_seq, t_seq] = sn_plot(f_list, dt_list)
 % varargout:
 %   s_seq   --   accumulative steps sequence
 %   t_seq   --   timeline
-%
+
 % copyright (c) wulx, <gurdy.woo@gmail.com>
 % last modified by wulx, 2013/10/17
 
