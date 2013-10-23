@@ -13,7 +13,7 @@ function [f_list, dt_list] = steps_per_time(sn_a, sn_c, sn_d, pf_i, pf_m, s_u, m
 % varargout:
 %   f_list   --  frequencies list
 %   dt_list  --  time periods list
-%   
+
 % copyright (c) wulx, <gurdy.woo@gmail.com>
 % last modified by wulx, 2013/10/16
 
