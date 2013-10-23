@@ -29,6 +29,9 @@ t_seq(end) = t_seq(end-1) + 1/f_list(end); % no pulse
 
 s_seq = [1:sn_tot sn_tot];
 
-figure, hold on;
-plot(t_seq, s_seq, 'b-')
-plot(t_seq, s_seq, 'r.')
+% plot stepping profile when no output arguments
+if nargout < 1
+    figure, hold on;
+    plot(t_seq, s_seq, 'b-')
+    plot(t_seq, s_seq, 'r.')
+end
