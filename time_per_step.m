@@ -55,7 +55,7 @@ u_d = [arrayfun(@(i) sqrt(u_m^2 - 2*d_f*(i-1)*s_u), 1:sn_d) u_0];
 f_list(sn_a+1:end) = (u_d(2:end-1) + u_d(3:end)) / 2;
 dt_list(sn_a+1:end) = s_u ./ f_list(sn_a+1:end);
 
-if sum( strcmp(method, {'round', 'fix'}) ) == 1 % round or fix
+if any( strcmp(method, {'round', 'fix'}) ) % round or fix
     f_list = feval(method, f_list);
     
     s_list = s_u * ones(1, sn);
