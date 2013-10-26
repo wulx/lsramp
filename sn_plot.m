@@ -1,5 +1,5 @@
 function varargout = sn_plot(f_list, dt_list)
-%SN_PLOT Stepper Numbers (accumulative) PLOT
+%SN_PLOT number of steps vs time PLOT
 %
 % varargin:
 %   f_list   --  frequencies list
