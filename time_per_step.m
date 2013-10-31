@@ -2,9 +2,9 @@ function [f_list, dt_list] = time_per_step(sn_a, sn_c, sn_d, pf_i, pf_m, s_u, me
 %TIME_PER_STEP time per step algorithm
 %
 % varargin:
-%   sn_a   --   stepper numbers of acceleration
-%   sn_c   --   stepper numbers during moving with constant speed
-%   sn_d   --   stepper numbers of deceleration
+%   sn_a   --   number of steps of acceleration
+%   sn_c   --   number of steps during moving with constant speed
+%   sn_d   --   number of steps of deceleration
 %   pf_i   --   initial pulse frequency
 %   pf_m   --   maximum pulse frequency
 %   s_u    --   unit steps, default value is 1
@@ -70,7 +70,7 @@ function varargout = ramp_eq(f_i, f_m, n, s)
 % varargin:
 %   f_i  --  initial frequency
 %   f_m  --  maximum frequency
-%   n    --  stepper numbers
+%   n    --  number of steps
 %   s    --  unit steps
 % varargout:
 %   a    --  acceleration or deceleration

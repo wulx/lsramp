@@ -1,5 +1,5 @@
-function [s_seq, t_seq] = sn_plot(f_list, dt_list)
-%SN_PLOT Stepper Numbers (accumulative) PLOT
+function varargout = sn_plot(f_list, dt_list)
+%SN_PLOT number of steps vs time PLOT
 %
 % varargin:
 %   f_list   --  frequencies list
@@ -29,9 +29,16 @@ t_seq(end) = t_seq(end-1) + 1/f_list(end); % no pulse
 
 s_seq = [1:sn_tot sn_tot];
 
-% plot stepping profile when no output arguments
-if nargout < 1
-    figure, hold on;
-    plot(t_seq, s_seq, 'b-')
-    plot(t_seq, s_seq, 'r.')
+switch nargout
+    case 0
+        % plot stepping profile when no output arguments
+        figure, hold on;
+        plot(t_seq, s_seq, 'b-')
+        plot(t_seq, s_seq, 'r.')
+    case 1
+        varargout = {s_seq};
+    case 2
+        varargout = {s_seq, t_seq};
+    otherwise
+        error('number of output arguments should be less than 3.')
 end
