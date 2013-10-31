@@ -1,4 +1,4 @@
-function varargout = lsr_plot(f_list, dt_list, t_step)
+function varargout = lsr_plot(f_list, dt_list)
 %LSR_PLOT Linear Speed Ramp PLOT
 %
 % varargin:
@@ -13,42 +13,48 @@ function varargout = lsr_plot(f_list, dt_list, t_step)
 %   S_d   --   ditto
 
 % copyright (c) wulx, <gurdy.woo@mail.ustc.edu.cn>
-% last modified by wulx, 2013/10/16
+% last modified by wulx, 2013/10/31
 
-if nargin < 3
-    t_step = min( dt_list ) / 5;
-end
-
-t_tot = sum( dt_list ); % total elapsed time
-t_seq = linspace(0, t_tot, round(t_tot / t_step));
-
-f_seq = zeros( size(t_seq) );
-
-num = numel(dt_list);
-t_pts = arrayfun(@(n) sum( dt_list(1:n) ), 0:num); % time points
-
-% piecewise function
-for i = 1:num-1
-    f_seq = f_list(i) * xor(t_seq < t_pts(i), t_seq < t_pts(i+1)) + f_seq;
-end
-f_seq = f_list(num) * xor(t_seq < t_pts(num), t_seq <= t_pts(num+1)) + f_seq;
+sn = numel(dt_list);
+t_list = [0 arrayfun(@(n) sum(dt_list(1:n)), 1:sn)];
+p_list = [f_list f_list(end)];
 
 figure, hold on;
-plot(t_seq, f_seq, 'b-')
+stairs(t_list, p_list, 'k-')
+xlim([0 t_list(end)])
 
-center_pts = arrayfun(@(n) t_pts(n) + 0.5*dt_list(n), 1:num); % all center time points
-plot(center_pts, f_list, 'r.')
+% baseline
+plot([0 t_list(end)], [0 0], 'k-')
 
-[~, ind] = max(f_list); % max frequency as watershed
-acc_pts = center_pts(1:ind-1); % acceleration time points
-dec_pts = center_pts((ind+1):end); % deceleration time points
-f_acc = f_list(1:ind-1);
-f_dec = f_list((ind+1):end);
+% find the max frequencies
+idx = find(f_list == max(f_list));
 
-plot(acc_pts, f_acc, dec_pts, f_dec, 'k-')
+% speeding up ramp
+xc_up = arrayfun(@(i) t_list(i)+0.5*dt_list(i), 1:idx(1));
+yc_up = f_list(1:idx(1));
+plot(xc_up, yc_up, 'r.')
 
-[p_a, S_a] = polyfit(acc_pts, f_acc, 1); % Polynomial curve fitting for acceleration ramp
-[p_d, S_d] = polyfit(dec_pts, f_dec, 1); % for deceleration ramp
+[p_a, S_a] = polyfit(xc_up, yc_up, 1); % Polynomial curve fitting for acceleration ramp
+xc_poly = [0 xc_up t_list(idx(2))];
+yc_poly = polyval(p_a, xc_poly);
+
+plot(xc_poly, yc_poly, 'k:')
+plot(xc_poly([end end]), [0 yc_poly(end)], 'k:')
+
+% speeding down ramp
+xc_dn = arrayfun(@(i) t_list(i)+0.5*dt_list(i), idx(end):sn);
+yc_dn = f_list(idx(end):sn);
+plot(xc_dn, yc_dn, 'r.')
+
+[p_d, S_d] = polyfit(xc_dn, yc_dn, 1); % for deceleration ramp
+xc_poly2 = [t_list(idx(end)) xc_dn t_list(end)];
+yc_poly2 = polyval(p_d, xc_poly2);
+
+plot(xc_poly2, yc_poly2, 'k:')
+plot(xc_poly2([1 1]), [0 yc_poly2(1)], 'k:')
+
+% set Y axis limit adaptely
+ylim([min([yc_poly(1), yc_poly2(end), 0]), max(yc_poly(end), yc_poly2(1))])
 
 title(['Acceleration: ' num2str(p_a(1)) ' ; deceleration: ' num2str(p_d(1))]);
 
