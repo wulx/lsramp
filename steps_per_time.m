@@ -75,5 +75,5 @@ switch method
         dt_list(inds) = dt_list3(2:end);
     otherwise
         disp(['unknown approximation method: ' method])
-        disp('supported methods: ideal(default), round and fix')
+        disp('available methods: ideal(default), round and fix')
 end
