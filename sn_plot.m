@@ -10,7 +10,7 @@ function varargout = sn_plot(f_list, dt_list)
 %   t_seq   --   timeline
 
 % copyright (c) wulx, <gurdy.woo@gmail.com>
-% last modified by wulx, 2013/10/17
+% last modified by wulx, 2013/10/31
 
 num = numel(f_list); % number of frequencies
 % fix bug #1 add round
@@ -33,8 +33,10 @@ switch nargout
     case 0
         % plot stepping profile when no output arguments
         figure, hold on;
-        plot(t_seq, s_seq, 'b-')
+        plot(t_seq, s_seq, 'k-')
         plot(t_seq, s_seq, 'r.')
+        
+        xlim(t_list([1 end]))
     case 1
         varargout = {s_seq};
     case 2

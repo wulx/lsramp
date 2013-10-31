@@ -27,6 +27,7 @@ method = 'round';
 % plot(xUp, f_list(1:idx(1)), 'r.')
 
 lsr_plot(f_list, dt_list)
+sn_plot(f_list, dt_list)
 
 %% steps_per_time
 % [f_list, dt_list] = steps_per_time(sn_a, sn_c, sn_d, pf_i, pf_m, s_u, method);

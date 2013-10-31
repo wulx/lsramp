@@ -4,7 +4,6 @@ function varargout = lsr_plot(f_list, dt_list)
 % varargin:
 %   f_list   --  frequencies list
 %   dt_list  --  time periods list
-%   t_step   --  time step
 %
 % varargout:
 %   p_a   --   polynomial curve fitting outputs for acceleration ramp
