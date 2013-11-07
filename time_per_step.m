@@ -1,12 +1,14 @@
-function [f_list, dt_list] = time_per_step(sn_a, sn_c, sn_d, pf_i, pf_m, s_u, method)
+function [f_list, dt_list] = time_per_step(sn, pf, s_u, method)
 %TIME_PER_STEP time per step algorithm
 %
 % varargin:
-%   sn_a   --   number of stairsteps of speeding up
-%   sn_c   --   number of stairsteps at constant speed (max speed)
-%   sn_d   --   number of stairsteps of speeding down
-%   pf_i   --   initial pulse frequency
-%   pf_m   --   maximum pulse frequency
+%   sn     --   cumulative stepper numbers, including sn_a, sn_c and sn_d
+%     sn_a   --   number of stairsteps of speeding up
+%     sn_c   --   number of stairsteps at constant speed (max speed)
+%     sn_d   --   number of stairsteps of speeding down
+%   pf     --   range of pulse frequencies, e.g. [pf_i, pf_m]
+%     pf_i   --   initial pulse frequency
+%     pf_m   --   maximum pulse frequency
 %   s_u    --   steps per stairstep, default value is 1
 %   method --   approximation method
 %
@@ -18,11 +20,11 @@ function [f_list, dt_list] = time_per_step(sn_a, sn_c, sn_d, pf_i, pf_m, s_u, me
 % last modified by wulx, 2013/10/31
 
 % check args
-if any(~isfinite([sn_a, sn_c, sn_d]) | ([sn_a, sn_c, sn_d]<0))
+if any(~isfinite(sn) | (sn<0))
     error('the number of steps should be finite non-negative.')
 end
 
-if any(~isfinite([pf_i, pf_m]) | ([pf_i, pf_m]<0))
+if any(~isfinite(pf) | (pf<0))
     error('pulse frequencies should be finite non-negative.')
 end
 
@@ -30,18 +32,26 @@ if ~isinteger(uint8(s_u)) || (s_u<1)
     error('steps per stairstep should be 8-bit positive integer (1 - 255).')
 end
 
-% default settings
-if nargin < 7, method = 'ideal'; end
-if nargin < 6, s_u = 1; end
 
-sn = sn_a + sn_d + 1; % number of stairsteps
+% default settings
+if nargin < 4, method = 'ideal'; end
+if nargin < 3, s_u = 1; end
+
+sn_a = sn(1);
+sn_c = sn(2);
+sn_d = sn(3);
+
+pf_i = pf(1);
+pf_m = pf(2);
+
+n = sn_a + sn_d + 1; % number of stairsteps
 
 % number of stairsteps
-s_list = s_u * ones(1, sn);
+s_list = s_u * ones(1, n);
 s_list(sn_a+1) = sn_c * s_u;
 
 % frequencies list (pre-alloction)
-f_list = nan(1, sn);
+f_list = nan(1, n);
 
 % speed up -------------------------------------------------------%
 % a_f -- frequency acceleration
